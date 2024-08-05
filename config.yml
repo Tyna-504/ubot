@@ -1,0 +1,26 @@
+recipe: default.v1
+language: en
+
+pipeline:
+- name: SingleStepLLMCommandGenerator 
+  llm:
+    type: huggingface_hub
+    repo_id: "QuantFactory/Meta-Llama-3-8B-Instruct-GGUF"
+    task: text-generation
+    model_kwargs:
+      temperature: 0.7
+      max_length: 200
+      top_p: 0.95
+      num_return_sequences: 1
+
+embeddings:
+  type: huggingface_hub
+  repo_id: "sentence-transformers/all-MiniLM-L6-v2"
+
+policies:
+- name: FlowPolicy
+#  - name: EnterpriseSearchPolicy
+#  - name: RulePolicy
+#assistant_id: 20240728-212229-few-silo
+#assistant_id: 20240731-094127-offline-clique
+assistant_id: 20240731-124509-volumetric-load

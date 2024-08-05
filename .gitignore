@@ -1,0 +1,12 @@
+# Ignore virtual environment directory
+ubot-env/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore other files
+*.log
+.DS_Store
