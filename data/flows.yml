@@ -1,13 +1,59 @@
 flows:
-  transfer_money:
-    description: This flow lets users send money to friends and family.
+  pattern_search:
+    description: handle a knowledge-based question or request
+    name: pattern search
     steps:
-      - collect: recipient
-      - collect: amount
-        description: the number of US dollars to send
-      - action: utter_transfer_complete
+      - action: action_trigger_search
 
-  greet_user:
-    description: This flow greets the user.
+  register_student:
+    description: This flow lets users register for a course.
     steps:
-      - action: utter_greet
+    - collect: student_id
+      description: A valid 7-digit student ID number.
+      rejections:
+        - if: not (slots.student_id matches "^[0-9]{7}$")
+          utter: utter_invalid_student_id
+    - collect: course_name
+      description: the name of the course to register for
+    #- action: register_DB # custom action to write the student into a DB
+    - action: utter_registration_complete
+
+  book_session:
+    description: This flow lets users book an appointment or academic session.
+    steps:
+      - collect: student_id
+        description: A valid 7-digit student ID number.
+        rejections:
+          - if: not ( slots.student_id matches "^[0-9]{7}$")
+            utter: utter_invalid_student_id
+      - collect: session_type
+        description: The type of session to book (e.g., 'academic', 'career', 'well-being').
+        next:
+          - if: slots.session_type is not null
+            then: collect_date_time
+          - else: invalid_session_type_step
+      - id: invalid_session_type_step
+        action: utter_invalid_session_type
+        next: []  # This indicates the end of this branch
+      - id: collect_date_time
+        collect: date_time
+        description: Preferred booking date and time in the format DD-MM-YYYY HH:MM.
+        rejections:
+          - if: not ( slots.date_time matches "^\d{2}-\d{2}-\d{4} \d{2}:\d{2}$")
+            utter: utter_invalid_date_time
+      - action: utter_session_booked
+        next: []  # This indicates the end of this branch
+
+  say_bye:
+    description: This flow lets users say goodbye to the assistant.
+    steps:
+      - action: utter_goodbye
+      - link: collect_feedback
+
+  collect_feedback:
+    description: Collect user satisfaction feedback
+    if: False
+    steps:
+      - collect: user_satisfaction    
+
+

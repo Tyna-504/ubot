@@ -1,24 +1,94 @@
 version: "3.1"
 
 slots:
-  recipient:
+  student_id:
     type: text
     mappings:
       - type: from_llm
-  amount:
-    type: float
+  
+  course_name:
+    type: text
     mappings:
       - type: from_llm
 
+  session_type:
+    type: categorical
+    values:
+      - academic
+      - career
+      - well-being
+
+  date_time:
+    type: text
+    mappings:
+      - type: from_llm
+
+  user_satisfaction:
+    type: float
+
 responses:
   utter_greet:
-    - text: "Hello, I am a university assistant!"
+    - text: "Hello! I'm a University of Birmingham assistant. How can I assist you today?"
+  
+  utter_cannot_handle:
+    - text: "I'm sorry, I can't help with that."
 
-  utter_ask_recipient:
-    - text: "Who would you like to send money to?"
+  utter_i_am_a_bot:
+    - text: "I am your university virtual assistant!"
 
-  utter_ask_amount:
-    - text: "How much money would you like to send?"
+  utter_capabilities:
+    - text: "I can help out with course registration, session booking, general queries, and more."
 
-  utter_transfer_complete:
-    - text: "All done. {amount} has been sent to {recipient}."
+  utter_feel_great:
+    - text: "I am a chatbot, so I don't have feelings. However if I did, I would be happy to help you with whatever you need!"
+
+  utter_goodbye:
+    - text: "Bye! If you need anything else, let me know!"
+
+  utter_human_handoff:
+    - text: "I understand you would like to be connected to a human agent, but that's something I cannot do at the moment. Instead, you can try calling this number for help: +971 4 428 0500"
+
+  utter_ask_student_id:
+    - text: "What is your student ID?"
+
+  utter_invalid_student_id:
+    - text: "The student ID should be a 7-digit number. Please try again."
+
+  utter_ask_course_name:
+    - text: "What is the course name you would like to register for?"
+
+  utter_registration_complete:
+    - text: "Student {student_id} has been successfully registered for {course_name}!"
+
+  utter_ask_session_type:
+    - text: "What type of session would you like to book? We offer academic, career, and well-being sessions."
+
+  utter_invalid_session_type:
+    - text: "Invalid session type. Please choose from academic, career, or well-being."
+
+  utter_ask_date_time:
+    - text: "What date and time would you like to book your {session_type} session for?"
+
+  utter_invalid_date_time:
+    - text: "Please provide the date and time in the correct format: YYYY-MM-DD HH:MM."
+
+  utter_session_booked:
+    - text: "Your {session_type} session on {date_time} has been booked successfully."
+
+  utter_ask_user_satisfaction:
+    - text: |
+        How satisfied are you with this conversation?
+      buttons:
+        - payload: "/SetSlots(user_satisfaction=1)"
+          title: "1 (not satisfied)"
+        - payload: "/SetSlots(user_satisfaction=2)"
+          title: "2 (somewhat unsatisfied)"
+        - payload: "/SetSlots(user_satisfaction=3)"
+          title: "3 (neutral)"
+        - payload: "/SetSlots(user_satisfaction=4)"
+          title: "4 (somewhat satisfied)"
+        - payload: "/SetSlots(user_satisfaction=5)"
+          title: "5 (very satisfied)"
+
+actions:
+- action_validate_session_type

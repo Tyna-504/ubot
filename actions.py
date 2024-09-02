@@ -3,20 +3,21 @@ from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import SlotSet
 
-
-class ActionCheckSufficientFunds(Action):
+    
+class ValidateSessionTypeAction(Action):
     def name(self) -> Text:
-        return "action_check_sufficient_funds"
+        return "action_validate_session_type"
 
-    def run(
-        self,
-        dispatcher: CollectingDispatcher,
-        tracker: Tracker,
-        domain: Dict[Text, Any],
-    ) -> List[Dict[Text, Any]]:
-        # hard-coded balance for tutorial purposes. in production this
-        # would be retrieved from a database or an API
-        balance = 1000
-        transfer_amount = tracker.get_slot("amount")
-        has_sufficient_funds = transfer_amount <= balance
-        return [SlotSet("has_sufficient_funds", has_sufficient_funds)]
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        session_type = tracker.get_slot("session_type")
+
+        valid_session_types = ["academic", "career", "well-being"]
+
+        if session_type not in valid_session_types:
+            dispatcher.utter_message(text="Sorry, that's not a valid session type. Please choose from 'academic', 'career', or 'well-being'.")
+            return [SlotSet("session_type", None)]
+
+        return []

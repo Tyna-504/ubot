@@ -2,25 +2,52 @@ recipe: default.v1
 language: en
 
 pipeline:
-- name: SingleStepLLMCommandGenerator 
+- name: SingleStepLLMCommandGenerator
   llm:
-    type: huggingface_hub
-    repo_id: "QuantFactory/Meta-Llama-3-8B-Instruct-GGUF"
-    task: text-generation
-    model_kwargs:
-      temperature: 0.7
-      max_length: 200
-      top_p: 0.95
-      num_return_sequences: 1
+    type: "huggingface_hub"
+    repo_id: "meta-llama/Meta-Llama-3.1-8B-Instruct"
+    task: "text-generation"
+  
+  flow_retrieval:
+      active: false
 
-embeddings:
-  type: huggingface_hub
-  repo_id: "sentence-transformers/all-MiniLM-L6-v2"
+  embeddings:
+    type: "huggingface_hub"
+    repo_id: "BAAI/bge-large-en-v1.5"
+    task: "feature-extraction"
 
 policies:
 - name: FlowPolicy
-#  - name: EnterpriseSearchPolicy
-#  - name: RulePolicy
-#assistant_id: 20240728-212229-few-silo
-#assistant_id: 20240731-094127-offline-clique
-assistant_id: 20240731-124509-volumetric-load
+  llm:
+    type: "huggingface_hub"
+    repo_id: "mistralai/Mistral-7B-Instruct-v0.3"
+    task: "text-generation"
+
+  embeddings:
+    type: "huggingface_hub"
+    repo_id: "BAAI/bge-large-en-v1.5"
+    task: "feature-extraction"
+
+- name: IntentlessPolicy
+  llm:
+    type: "huggingface_hub"
+    repo_id: "meta-llama/Meta-Llama-3.1-8B-Instruct"
+    task: "text-generation"
+
+  embeddings:
+    type: "huggingface_hub"
+    repo_id: "BAAI/bge-large-en-v1.5"
+    task: "feature-extraction"
+
+- name: EnterpriseSearchPolicy
+  llm:
+    type: "huggingface_hub"
+    repo_id: "meta-llama/Meta-Llama-3.1-8B-Instruct"
+    task: "text-generation"
+  
+  embeddings:
+    type: "huggingface_hub"
+    repo_id: "BAAI/bge-large-en-v1.5"
+    task: "feature-extraction"
+
+assistant_id: 20240807-131300-ornery-dolce
